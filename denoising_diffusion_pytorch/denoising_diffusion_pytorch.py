@@ -823,7 +823,7 @@ class GaussianDiffusion(nn.Module):
 
 # dataset classes
 
-class MNISTDataset(Dataset):
+class Dataset(Dataset):
     def __init__(self, image_size, train=True):
         super().__init__()
         self.image_size = image_size
@@ -904,7 +904,7 @@ class Trainer(object):
 
         # dataset and dataloader
 
-        self.ds = MNISTDataset(diffusion_model.image_size, train=True)
+        self.ds = Dataset(diffusion_model.image_size, train=True)
 
         assert len(self.ds) >= 100, 'you should have at least 100 images in your folder. at least 10k images recommended'
 
