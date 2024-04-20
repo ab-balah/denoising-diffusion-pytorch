@@ -910,7 +910,7 @@ class Trainer(object):
 
         # Split the indices in a stratified way
         indices = np.arange(len(self.ds))
-        train_indices, _ = train_test_split(indices, train_size=150, stratify=self.ds.targets)
+        train_indices, _ = train_test_split(indices, train_size=150)
 
         # Warp into Subsets and DataLoaders
         self.ds = Subset(self.ds, train_indices)
