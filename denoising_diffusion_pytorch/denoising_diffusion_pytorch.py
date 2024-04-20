@@ -5,13 +5,13 @@ from random import random
 from functools import partial
 from collections import namedtuple
 from multiprocessing import cpu_count
-
+import numpy as np
 import torch
 from torch import nn, einsum
 from torch.cuda.amp import autocast
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader
-
+from torch.utils.data import Dataset, DataLoader, Subset
+from sklearn.model_selection import train_test_split
 from torch.optim import Adam
 
 from torchvision import transforms as T, utils
@@ -907,6 +907,13 @@ class Trainer(object):
         self.ds = Dataset(diffusion_model.image_size, train=True)
 
         assert len(self.ds) >= 100, 'you should have at least 100 images in your folder. at least 10k images recommended'
+
+        # Split the indices in a stratified way
+        indices = np.arange(len(self.ds))
+        train_indices, _ = train_test_split(indices, train_size=150, stratify=self.ds.targets)
+
+        # Warp into Subsets and DataLoaders
+        self.ds = Subset(self.ds, train_indices)
 
         dl = DataLoader(self.ds, batch_size = train_batch_size, shuffle = True, pin_memory = True, num_workers = cpu_count())
 
